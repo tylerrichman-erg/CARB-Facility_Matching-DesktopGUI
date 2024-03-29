@@ -39,7 +39,8 @@ def standardize_table(
         LON_name: "LON_NAD83"
         }
 
-    df.rename(columns=col_rename_dict, inplace=True)
+    df = df.rename(columns=col_rename_dict)
+    #df.rename(columns=col_rename_dict, inplace=True)
 
     dtype_mapping = {
         "CO": str, 
@@ -83,7 +84,7 @@ def run_spatial_join(df, parcel_gdf):
     geometry = [Point(xy) for xy in zip(df['LON_NAD83'], df['LAT_NAD83'])]
     gdf = gpd.GeoDataFrame(df, geometry=geometry, crs='EPSG:4269')
 
-    df = gpd.sjoin(gdf, parcel_gdf, how="left", op="within")\
+    df = gpd.sjoin(gdf, parcel_gdf, how="left", predicate="within")\
         .drop(columns=["geometry", "index_right", "Shape@WKT"])
 
     df = df.sort_values(by=['Parcel_UID', 'AREA_M2'], ascending=[True, False])\
