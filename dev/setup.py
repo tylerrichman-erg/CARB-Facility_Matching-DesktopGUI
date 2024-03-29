@@ -3,7 +3,7 @@ import shutil
 import subprocess
 
 class App:
-    def __init__(self, ):
+    def __init__(self):
         self.workspace_folder = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/CARB-Facility_Matching-DesktopGUI"
         self.parcel_parquet_folder = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/Parcel.pqt"
         self.facility_database_file = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/CARB_Facilities.db"
@@ -30,7 +30,6 @@ if __name__ == "__main__":
         os.makedirs(main_exe_folder_location)
 
     subprocess.run(['python', '-m', 'venv', os.path.join(App.workspace_folder, "fm-desktop-env")], check=True)
-    subprocess.run([activate_venv_command], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "geopandas"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow"], check=True)
