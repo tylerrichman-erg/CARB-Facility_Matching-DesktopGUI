@@ -5,6 +5,8 @@ import pandas as pd
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
+import openpyxl
+from openpyxl.styles import PatternFill
 
 import time
 
@@ -201,10 +203,12 @@ def execute_facility_matching():
     sheet_name = selected_option.get()
     
     df = pd.read_excel(excel_path, sheet_name=sheet_name)
+    df.insert(0, 'UID', df.index)
+    #df['UID'] = df.index
 
     print("Standardizing Input Table...")
     
-    df = algorithm.standardize_table(
+    df_standardized = algorithm.standardize_table(
         df = df,
         CO_name = selected_option_CO.get(),
         AB_name = selected_option_AB.get(),
@@ -228,16 +232,16 @@ def execute_facility_matching():
 
     print("Performing Spatial Join with Parcel Dataset...")
 
-    df = algorithm.run_spatial_join(df, parcel_gdf)
+    df_standardized = algorithm.run_spatial_join(df_standardized, parcel_gdf)
 
     print("Standardizing Facility Name and Address Fields...")
 
-    df = algorithm.standardize_text_fields(df, logic_path = os.path.join(workspace_directory, r"dev\standardization\Word_Replacement_Table.csv"))
+    df_standardized = algorithm.standardize_text_fields(df_standardized, logic_path = os.path.join(workspace_directory, r"dev\standardization\Word_Replacement_Table.csv"))
 
     print("Rounding Coordinates to 5 Decimal Places...")
 
-    df["LATITUDE_ROUND_5"] = df["LAT_NAD83"].round(5)
-    df["LONGITUDE_ROUND_5"] = df["LON_NAD83"].round(5)
+    df_standardized["LATITUDE_ROUND_5"] = df_standardized["LAT_NAD83"].round(5)
+    df_standardized["LONGITUDE_ROUND_5"] = df_standardized["LON_NAD83"].round(5)
 
     print("Reading in Master Facilities Table...")
 
@@ -260,19 +264,97 @@ def execute_facility_matching():
         PARCEL_name = config["Database"].get("PARCEL_name")
         )
 
-    print("Executing Matching Algorithm...\n")
+    print("Executing Matching Algorithm...") #Executing Matching Algorithm...\n
 
     df_matched = algorithm.execute_matching_algorithm(
-        df,
+        df_standardized,
         df_master,
         match_scores_fields_path = os.path.join(workspace_directory, r"dev\matching\logic.json")
         )
 
-    df_matched.to_excel(file_path_output.get(), index=False)
+    print("Generating Output Table...\n")
 
-    print("Match count summary...")
+    df_scores_criteria = pd.DataFrame(
+        [
+            [1, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0", "0"],
+            [2, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", "Y", "Y", "0", "0"],
+            [3, "Y", "Y", "Y", " ", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0", "0"],
+            [4, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", " ", "Y", "0"],
+            [5, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", " ", " ", "Y", "0"],
+            [6, "Y", "Y", "Y", " ", "Y", "Y", "Y", "Y", " ", " ", " ", " ", "0"],
+            [7, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", "Y", "Y", "Y", " ", "0"],
+            [8, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0"],
+            [9, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", " ", " ", " ", "Y", "0"],
+            [20, "Y", "Y", "Y", " ", "Y", " ", " ", " ", "Y", "Y", "Y", "Y", "Y"],
+            [21, "Y", "Y", "Y", " ", "Y", " ", " ", " ", "Y", "Y", "Y", "Y", "Y"],
+            [30, "Y", "Y", "Y", "Y", " ", " ", " ", " ", " ", " ", " ", " ", " "]
+            ],
+        columns = ["Match_Score", "CO", "AB", "DIS", "FACID", "FNAME", "FSTREET", "FCITY", "FZIP", "FSIC","LAT", "LON", "Parcel", "FNAICS"]
+        )
 
-    print(df_matched.groupby(['Match_Score']).size())
+    #print(df)
+    #print(df_standardized)
+    #print(df_master)
+    #print(df_matched)
+    #print(df_scores_cols)
+
+    df_final = algorithm.create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_master)
+
+    df_final.drop(columns=["UID"], inplace=True)
+
+    df_final.to_excel(file_path_output.get(), index=False)
+
+    wb = openpyxl.load_workbook(file_path_output.get())
+    ws = wb['Sheet1']
+
+    len_of_original_table = df.shape[1]
+
+    for col in range(1, len_of_original_table):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = PatternFill(start_color="FFCC66", end_color="FFCC66", fill_type="solid")
+
+    start_pos_of_standardized_table = len_of_original_table
+    len_of_standardized_table = df_standardized.shape[1] - 1
+
+    for col in range(start_pos_of_standardized_table, start_pos_of_standardized_table + len_of_standardized_table):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = PatternFill(start_color="FF7C80", end_color="FF7C80", fill_type="solid")
+
+    start_pos_of_matched_table = len_of_standardized_table + start_pos_of_standardized_table
+    len_of_matched_table = 2
+
+    for col in range(start_pos_of_matched_table, start_pos_of_matched_table + len_of_matched_table):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = PatternFill(start_color="66FF33", end_color="66FF33", fill_type="solid")
+
+    start_pos_of_scores_criteria_table = len_of_matched_table + start_pos_of_matched_table
+    len_of_scores_criteria_table = df_scores_criteria.shape[1] - 1
+
+    for col in range(start_pos_of_scores_criteria_table, start_pos_of_scores_criteria_table + len_of_scores_criteria_table):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = PatternFill(start_color="9999FF", end_color="9999FF", fill_type="solid")
+
+    start_pos_of_master_table = len_of_scores_criteria_table + start_pos_of_scores_criteria_table
+    len_of_master_table = df_master.shape[1] - 1
+
+    for col in range(start_pos_of_master_table, start_pos_of_master_table + len_of_master_table):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = PatternFill(start_color="33CCFF", end_color="33CCFF", fill_type="solid")
+
+
+    wb.save(file_path_output.get())
+
+    print("Done!")
+
+    df_summary = df_matched.groupby(['Match_Score']).size().reset_index('Match_Score')
+    df_summary.columns = ['Match_Score', 'Match_Count']
+    
+    message_box_text = "Facility Matching Complete!\n\nFacility\tMatch\nScore\tScore\n\n" #"Facility Matching Complete!\n\nMatch Score\tMatch Count\n" 
+
+    for index, row in df_summary.iterrows():
+        message_box_text = "{0}{1}\t{2}\n".format(message_box_text, '{:,}'.format(int(row['Match_Score'])), '{:,}'.format(int(row['Match_Count'])))
+
+    tk.messagebox.showinfo("CARB Facility Matching", message_box_text) 
 
 
 #################################################

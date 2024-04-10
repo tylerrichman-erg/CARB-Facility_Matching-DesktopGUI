@@ -22,9 +22,10 @@ def standardize_table(
     LON_name
     ):
 
-    df = df[[CO_name, AB_name, DIS_name, FACID_name, FNAME_name, FSTREET_name, FCITY_name, FZIP_name, FSIC_name, FNAICS_name, LAT_name, LON_name]]
+    df = df[["UID", CO_name, AB_name, DIS_name, FACID_name, FNAME_name, FSTREET_name, FCITY_name, FZIP_name, FSIC_name, FNAICS_name, LAT_name, LON_name]]
 
     col_rename_dict = {
+        "UID" : "UID",
         CO_name: "CO",
         AB_name: "AB",
         DIS_name: "DIS",
@@ -43,6 +44,7 @@ def standardize_table(
     #df.rename(columns=col_rename_dict, inplace=True)
 
     dtype_mapping = {
+        "UID": int,
         "CO": str, 
         "AB": str, 
         "DIS": str,
@@ -60,8 +62,6 @@ def standardize_table(
     df = df.astype(dtype_mapping)
     df["FSIC"] = df["FSIC"].replace(r'\.0$', '', regex=True)
     df["FNAICS"] = df["FNAICS"].replace(r'\.0$', '', regex=True)
-
-    df['UID'] = df.index
 
     return df
 
@@ -286,3 +286,55 @@ def execute_matching_algorithm(df, df_master, match_scores_fields_path):
         df_matched = df
 
     return df_matched
+
+def create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_master):
+
+    #print(df.columns)
+    #print(df_standardized.columns)
+
+    df_standardized.drop(columns=["Match_ARBID", "Match_Score"], inplace=True)
+
+    for column in df_standardized.columns:
+        if column != 'UID':
+            df_standardized.rename(columns={column: column + '_standardizedCol'}, inplace=True)
+
+    df_final = pd.merge(
+        df,
+        df_standardized,
+        on='UID',
+        how='left'
+    )
+
+    df_final = pd.merge(
+        df_final,
+        df_matched[["UID", "Match_ARBID", "Match_Score"]],
+        on='UID',
+        how='outer'
+    )
+
+    for column in df_scores_criteria.columns:
+        if column not in ["UID", "Match_Score", "Match_ARBID"]:
+            df_scores_criteria.rename(columns={column: column + '_matchCriteria'}, inplace=True)
+
+    df_final = pd.merge(
+        df_final,
+        df_scores_criteria,
+        on='Match_Score',
+        how='left'
+    )
+
+    df_master.drop(columns=["Score_To_Assign"], inplace=True)
+    df_master.rename(columns={"ARBID": "Match_ARBID"}, inplace=True)
+
+    for column in df_master.columns:
+        if column not in ["Match_ARBID"]:
+            df_master.rename(columns={column: column + '_matchRecord'}, inplace=True)
+
+    df_final = pd.merge(
+        df_final,
+        df_master,
+        on='Match_ARBID',
+        how='left'
+    )
+
+    return df_final
