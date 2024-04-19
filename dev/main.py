@@ -276,18 +276,18 @@ def execute_facility_matching():
 
     df_scores_criteria = pd.DataFrame(
         [
-            [1, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0", "0"],
-            [2, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", "Y", "Y", "0", "0"],
-            [3, "Y", "Y", "Y", " ", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0", "0"],
-            [4, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", " ", "Y", "0"],
-            [5, "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", " ", " ", " ", "Y", "0"],
-            [6, "Y", "Y", "Y", " ", "Y", "Y", "Y", "Y", " ", " ", " ", " ", "0"],
-            [7, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", "Y", "Y", "Y", " ", "0"],
-            [8, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "0"],
-            [9, "Y", "Y", "Y", " ", " ", "Y", "Y", "Y", " ", " ", " ", "Y", "0"],
-            [20, "Y", "Y", "Y", " ", "Y", " ", " ", " ", "Y", "Y", "Y", "Y", "Y"],
-            [21, "Y", "Y", "Y", " ", "Y", " ", " ", " ", "Y", "Y", "Y", "Y", "Y"],
-            [30, "Y", "Y", "Y", "Y", " ", " ", " ", " ", " ", " ", " ", " ", " "]
+            [1, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A", "N/A"],
+            [2, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "N/A", "N/A"],
+            [3, "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A", "N/A"],
+            [4, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
+            [5, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
+            [6, "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "N/A"],
+            [7, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "N/A"],
+            [8, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A"],
+            [9, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
+            [20, "Match", "Match", "Match", "Check for Mismatch", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match"],
+            [21, "Match", "Match", "Match", "Check for Mismatch", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match"],
+            [30, "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch"]
             ],
         columns = ["Match_Score", "CO", "AB", "DIS", "FACID", "FNAME", "FSTREET", "FCITY", "FZIP", "FSIC","LAT", "LON", "Parcel", "FNAICS"]
         )
@@ -349,7 +349,7 @@ def execute_facility_matching():
     df_summary = df_matched.groupby(['Match_Score']).size().reset_index('Match_Score')
     df_summary.columns = ['Match_Score', 'Match_Count']
     
-    message_box_text = "Facility Matching Complete!\n\nFacility\tMatch\nScore\tScore\n\n" #"Facility Matching Complete!\n\nMatch Score\tMatch Count\n" 
+    message_box_text = "Facility Matching Complete!\n\nMatch\tMatch\nScore\tCount\n\n" #"Facility Matching Complete!\n\nMatch Score\tMatch Count\n" 
 
     for index, row in df_summary.iterrows():
         message_box_text = "{0}{1}\t{2}\n".format(message_box_text, '{:,}'.format(int(row['Match_Score'])), '{:,}'.format(int(row['Match_Count'])))
