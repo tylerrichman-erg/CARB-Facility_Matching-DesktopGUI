@@ -224,25 +224,6 @@ def execute_facility_matching():
         LON_name = selected_option_Longitude.get()
         )
 
-    print("Loading Parcel Dataset...")
-
-    parcel_gdf = algorithm.load_parcel_dataset(
-        pqt_folder_path = App.parcel_parquet_folder
-        )
-
-    print("Performing Spatial Join with Parcel Dataset...")
-
-    df_standardized = algorithm.run_spatial_join(df_standardized, parcel_gdf)
-
-    print("Standardizing Facility Name and Address Fields...")
-
-    df_standardized = algorithm.standardize_text_fields(df_standardized, logic_path = os.path.join(workspace_directory, r"dev\standardization\Word_Replacement_Table.csv"))
-
-    print("Rounding Coordinates to 5 Decimal Places...")
-
-    df_standardized["LATITUDE_ROUND_5"] = df_standardized["LAT_NAD83"].round(5)
-    df_standardized["LONGITUDE_ROUND_5"] = df_standardized["LON_NAD83"].round(5)
-
     print("Reading in Master Facilities Table...")
 
     df_master = algorithm.read_in_master_table(
@@ -263,6 +244,32 @@ def execute_facility_matching():
         LON_name = config["Database"].get("LON_name"),
         PARCEL_name = config["Database"].get("PARCEL_name")
         )
+
+    df_master.insert(0, 'UID', df_master.index)
+
+    print("Loading Parcel Dataset...")
+
+    parcel_gdf = algorithm.load_parcel_dataset(
+        pqt_folder_path = App.parcel_parquet_folder
+        )
+
+    print("Performing Spatial Join with Parcel Dataset...")
+
+    df_standardized = algorithm.run_spatial_join(df_standardized, parcel_gdf)
+    df_master = algorithm.run_spatial_join(df_master, parcel_gdf)
+
+    print("Standardizing Facility Name and Address Fields...")
+
+    df_standardized = algorithm.standardize_text_fields(df_standardized, logic_path = os.path.join(workspace_directory, r"dev\standardization\Word_Replacement_Table.csv"))
+    df_master = algorithm.standardize_text_fields(df_master, logic_path = os.path.join(workspace_directory, r"dev\standardization\Word_Replacement_Table.csv"))
+
+    print("Rounding Coordinates to 5 Decimal Places...")
+
+    df_standardized["LATITUDE_ROUND_5"] = df_standardized["LAT_NAD83"].round(5)
+    df_standardized["LONGITUDE_ROUND_5"] = df_standardized["LON_NAD83"].round(5)
+
+    df_master["LATITUDE_ROUND_5"] = df_master["LAT_NAD83"].round(5)
+    df_master["LONGITUDE_ROUND_5"] = df_master["LON_NAD83"].round(5)
 
     print("Executing Matching Algorithm...") #Executing Matching Algorithm...\n
 
