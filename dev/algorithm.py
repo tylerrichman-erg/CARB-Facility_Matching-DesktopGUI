@@ -173,19 +173,18 @@ def read_in_master_table(
         AB_name: "AB",
         DIS_name: "DIS",
         FACID_name: "FACID",
-        FNAME_name: "FNAME_STANDARDIZED",
-        FSTREET_name: "FSTREET_STANDARDIZED",
+        FNAME_name: "FNAME",
+        FSTREET_name: "FSTREET",
         FCITY_name: "FCITY",
         FZIP_name: "FZIP",
         FSIC_name: "FSIC",
         FNAICS_name: "FNAICS",
-        LAT_name: "LATITUDE_ROUND_5",
-        LON_name: "LONGITUDE_ROUND_5",
-        PARCEL_name: "Parcel_UID"
+        LAT_name: "LAT_NAD83",
+        LON_name: "LON_NAD83"
         }
 
     df_master.rename(columns=col_rename_dict, inplace=True)
-    df_master = df_master[["ARBID", "CO", "AB", "DIS", "FACID", "FNAME_STANDARDIZED", "FSTREET_STANDARDIZED", "FCITY", "FZIP", "FSIC", "FNAICS", "LATITUDE_ROUND_5", "LONGITUDE_ROUND_5", "Parcel_UID"]]
+    df_master = df_master[["ARBID", "CO", "AB", "DIS", "FACID", "FNAME", "FSTREET", "FCITY", "FZIP", "FSIC", "FNAICS", "LAT_NAD83", "LON_NAD83"]]
 
     dtype_mapping = {
         "ARBID": int,
@@ -193,15 +192,14 @@ def read_in_master_table(
         "AB": str, 
         "DIS": str,
         "FACID": str,
-        "FNAME_STANDARDIZED": str, 
-        "FSTREET_STANDARDIZED": str, 
+        "FNAME": str, 
+        "FSTREET": str, 
         "FCITY": str,
         "FZIP": str,
         "FSIC": str, 
         "FNAICS": str,
-        "LATITUDE_ROUND_5": float,
-        "LONGITUDE_ROUND_5": float,
-        "Parcel_UID": float
+        "LAT_NAD83": float,
+        "LON_NAD83": float
     }
 
     df_master = df_master.astype(dtype_mapping)
