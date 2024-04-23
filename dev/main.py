@@ -297,12 +297,6 @@ def execute_facility_matching():
         columns = ["Match_Score", "CO", "AB", "DIS", "FACID", "FNAME", "FSTREET", "FCITY", "FZIP", "FSIC","LAT", "LON", "Parcel", "FNAICS"]
         )
 
-    #print(df)
-    #print(df_standardized)
-    #print(df_master)
-    #print(df_matched)
-    #print(df_scores_cols)
-
     df_final = algorithm.create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_master)
 
     df_final.drop(columns=["UID"], inplace=True)
