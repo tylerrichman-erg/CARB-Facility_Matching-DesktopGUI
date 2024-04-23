@@ -8,8 +8,6 @@ from tkinter import filedialog
 import openpyxl
 from openpyxl.styles import PatternFill
 
-import time
-
 import algorithm
 import setup
 
