@@ -41,7 +41,6 @@ def standardize_table(
         }
 
     df = df.rename(columns=col_rename_dict)
-    #df.rename(columns=col_rename_dict, inplace=True)
 
     dtype_mapping = {
         "UID": int,
@@ -262,33 +261,12 @@ def execute_matching_algorithm(df, df_master, match_scores_fields_path):
                 match_score = int(match_score), 
                 match_cols = match_fields_dict[match_score]
             )
-        
-        """
-        for match_cols in match_fields_dict[match_score]:
-            df = algorithm(
-                df = df, 
-                matching_df = df_master, 
-                match_score = match_score, 
-                match_cols = match_cols
-            )
-        """
-        """
-        if first_run is True:
-            df_matched = df_new_match
-            first_run = False
-
-        else:
-            df_matched = pd.concat([df_matched, df_new_match], ignore_index=True)
-        """
 
         df_matched = df
 
     return df_matched
 
 def create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_master):
-
-    #print(df.columns)
-    #print(df_standardized.columns)
 
     df_standardized.drop(columns=["Match_ARBID", "Match_Score"], inplace=True)
 
