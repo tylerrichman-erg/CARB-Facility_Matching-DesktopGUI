@@ -22,6 +22,16 @@ def standardize_table(
     LON_name
     ):
 
+    """
+    This function standardizes the input table into a format that is compatible
+    with the remaining processing steps for facility matching. This function
+    inputs a data frame of the input table as well as column names specified in
+    the GUI. It renames the columns to the names specified in col_rename_dict.
+    It then sets the data type of each column of the data frame. Finally it
+    removes any decimals places that may have accedentally been added to the
+    FSIC and FNAICS columns.
+    """
+
     df = df[["UID", CO_name, AB_name, DIS_name, FACID_name, FNAME_name, FSTREET_name, FCITY_name, FZIP_name, FSIC_name, FNAICS_name, LAT_name, LON_name]]
 
     col_rename_dict = {
@@ -66,10 +76,15 @@ def standardize_table(
 
 def load_parcel_dataset(pqt_folder_path):
 
+    """
+    This function loads the parcel dataset in to a data frame before getting
+    converted into a GeoPandas data frame referenced to EPSG:4269.
+    """
+
     parcel_prq = pq.read_table(pqt_folder_path)
     parcel_df = parcel_prq.to_pandas()
-    parcel_df = parcel_df.drop_duplicates()
-    parcel_df["Parcel_UID"] = parcel_df.index
+    #parcel_df = parcel_df.drop_duplicates()
+    #parcel_df["Parcel_UID"] = parcel_df.index
     parcel_gdf = gpd.GeoDataFrame(
         parcel_df,
         geometry=gpd.GeoSeries.from_wkt(parcel_df['Shape@WKT']),
@@ -79,6 +94,17 @@ def load_parcel_dataset(pqt_folder_path):
     return parcel_gdf
 
 def run_spatial_join(df, parcel_gdf):
+
+    """
+    This function inputs a facilities data frame as well as parcel GeoPandas
+    data frame. The facilities data frame is converted into a GeoPandas data
+    frame and spatial joined with the parcel GeoPandas data frame. Because
+    overlapping parcels have been found during beta testing, only the largest
+    parcel per facility is extracted. Ties go to the parcel with the lowest
+    Parcel_UID. Unneeded columns are droped from the joined data frame. This
+    function is used for both the input facilities table and Golden Master
+    table.
+    """
 
     geometry = [Point(xy) for xy in zip(df['LON_NAD83'], df['LAT_NAD83'])]
     gdf = gpd.GeoDataFrame(df, geometry=geometry, crs='EPSG:4269')
@@ -95,6 +121,18 @@ def run_spatial_join(df, parcel_gdf):
     return df
 
 def standardize(col, standardization_dict, special_characters_list):
+
+    """
+    This function inputs a data frame column, dictionary of whole words to
+    convert, and a list of special characters. The code performs string
+    replacements on the data frame column for '-', '@', '%' as these are special
+    characters that have word replacements. The code then removes spacial
+    characters in the data frame column. It converts the column to UPPERCASE. It
+    then removes excess spaces between words as well as add a leading and trailing
+    space to the entire string. This is to distinguish whole words for word
+    replacement. It then performs the word replacement before removing leading
+    and trailing spaces.
+    """
 
     ## Replace "-", "@", and "%" ##
     col = col.str.replace('-', ' ')
@@ -160,6 +198,17 @@ def read_in_master_table(
         PARCEL_name
         ):
 
+    """
+    This function input the location of the database containing the Golden
+    Master table as well as values from the config.ini file specifying the field
+    names used within the database. The code uses SQLITE3 to connect to the
+    database. Pandas is then used to read in the entire table from the database
+    in a data frame. The columns are then renamed to be compatible with the
+    rest of the code. It then sets the data type of each column of the data frame. Finally it
+    removes any decimals places that may have accedentally been added to the
+    FSIC and FNAICS columns.
+    """
+
     conn = sqlite3.connect(db_loc)
 
     df_master = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
@@ -208,6 +257,11 @@ def read_in_master_table(
     return df_master
 
 def drop_y_cols(df):
+
+    """
+    This function is used within algorithm() to drop columns in the tabular join
+    that end with "_y".
+    """
     
     columns_to_drop = [col for col in df.columns if col.endswith("_y")]
     df = df.drop(columns=columns_to_drop, axis=1)
@@ -215,12 +269,24 @@ def drop_y_cols(df):
     return df
 
 def rename_x_cols(df):
+
+    """
+    This function is used within algorithm() to remove "_x" within columns after
+    the tabular join.
+    """
     
     df.columns = [col[:-2] if col.endswith("_x") else col for col in df.columns]
     
     return df
 
 def algorithm(df, matching_df, match_score, match_cols):
+
+    """
+    This function matches the input facility table to the Golden Master table on
+    columns associated with the match score. It adds values to the Match_ARBID
+    and Match_Score columns of the input facility table if a match occurs. It is
+    included within execure_match_algorithm.
+    """
 
     matching_df["Score_To_Assign"] = match_score
     df = pd.merge(
@@ -244,6 +310,12 @@ def algorithm(df, matching_df, match_score, match_cols):
     return df
 
 def execute_matching_algorithm(df, df_master, match_scores_fields_path):
+    """
+    This function creates the Match_ARBID and Match_Score columns within the
+    input facilities table. It also loops through the match scores within
+    logic.json and performs the match within algorithm() on the columns
+    specified within the JSON.
+    """
 
     with open(match_scores_fields_path, 'r') as json_file:
         match_fields_dict = json.load(json_file)
@@ -267,6 +339,10 @@ def execute_matching_algorithm(df, df_master, match_scores_fields_path):
     return df_matched
 
 def create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_master):
+
+    """
+    This function creates the final table.
+    """
 
     df_standardized.drop(columns=["Match_ARBID", "Match_Score"], inplace=True)
 
