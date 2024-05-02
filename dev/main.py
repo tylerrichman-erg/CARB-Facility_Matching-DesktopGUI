@@ -35,8 +35,11 @@ text_font = "Verdana"
 
 def open_file_dialog():
     """
-    Select input facility file for matching.
+    This function allows the user to select an input excel file for the tool.
+    It is called upon when the user clicks the GUi button associated with the
+    open_button varaible in this script.
     """
+    
     file_path = filedialog.askopenfilename()
     if file_path:
         file_path_entry.config(state='normal')
@@ -58,8 +61,11 @@ def open_file_dialog():
 
 def select_output_file():
     """
-    Select output file from matching.
+    This function allows the user to select an output excel file for the tool.
+    It is called upon when the user clicks the GUI button associated with the
+    open_button_output varaible in this script.
     """
+    
     output_file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")])
     if output_file_path:
         file_path_output.config(state='normal')
@@ -69,15 +75,22 @@ def select_output_file():
 
 def load_button_actions():
     """
-    Functions to run once load button is clicked.
+    This function executes other functions (load_excel_file, add_field_matching,
+    and add_output_file_selection) that all together display field configuation
+    and output file selction within the GUI once an input file has been selected
+    and loaded. It is called upon when the user clicks the GUI button associated
+    with the load_button varaible in this script.
     """
+    
     load_excel_file()
     add_field_matching()
     add_output_file_selection()
 
 def load_excel_file():
     """
-    Load excel file columns and append to dropdowns.
+    This function loads in field names from the input excel file and uses these
+    as selectable options within the dropdown bars that allow users to configure
+    field names within the GUI.
     """
     excel_path = file_path_entry.get()
     sheet_name = selected_option.get()
@@ -138,7 +151,8 @@ def load_excel_file():
 
 def add_field_matching():
     """
-    Add field configuration to the window.
+    This function displays selected field names within the dropdowns of the
+    field name configuration section of the GUI.
     """
     selection_label.grid(row=0, column=0, columnspan=2, pady=5, sticky='nsew')
     
@@ -182,7 +196,8 @@ def add_field_matching():
 
 def add_output_file_selection():
     """
-    Add output file configuration to the window.
+    This function adds the selected output file location text to the GUI
+    application.
     """
     label_output.grid(row=0, column=0, sticky='w')
     open_button_output.grid(row=0, column=1, padx=5)
@@ -192,7 +207,12 @@ def add_output_file_selection():
 
 def execute_facility_matching():
     """
-    Run facility matching.
+    This function calls upon and executes all of the functions within
+    algorithm.py to run the facility matching process. Each section of this
+    function is seperated by a print statement that notifies the users which
+    stage of the process is being executed. Documentation for each algorthm.py
+    function is included in that file. t is called upon when the user clicks the
+    GUI button associated with the execute_button varaible in this script.
     """
     
     print("\n\n #### Starting Facility Matching #####\n")
