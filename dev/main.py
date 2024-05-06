@@ -368,12 +368,12 @@ def execute_facility_matching():
     df_summary = df_matched.groupby(['Match_Score']).size().reset_index('Match_Score')
     df_summary.columns = ['Match_Score', 'Match_Count']
     
-    message_box_text = "Facility Matching Complete!\n\nMatch\tMatch\nScore\tCount\n\n" #"Facility Matching Complete!\n\nMatch Score\tMatch Count\n" 
+    message_box_text = "Facility Matching Complete!\n\nMatch\tMatch\nScore\tCount\n\n"
 
     for index, row in df_summary.iterrows():
         message_box_text = "{0}{1}\t{2}\n".format(message_box_text, '{:,}'.format(int(row['Match_Score'])), '{:,}'.format(int(row['Match_Count'])))
 
-    tk.messagebox.showinfo("CARB Facility Matching", message_box_text) 
+    tk.messagebox.showinfo("FacFinder: CARB Facility Matching Tool", message_box_text) 
 
 
 #################################################
@@ -385,7 +385,7 @@ def execute_facility_matching():
     
 ## Create root for window
 root = tk.Tk()
-root.title("CARB Facility Matching")
+root.title("FacFinder")
 
 ## Set the height and width of the window
 window_width = 800
@@ -404,7 +404,7 @@ title_frame = tk.Frame(root)
 title_frame.pack(pady=10)
 
 ## Create a label for title
-label = tk.Label(title_frame, text="CARB Facility Matching")
+label = tk.Label(title_frame, text="FacFinder: CARB Facility Matching Tool")
 label.pack(side='top', pady=10)
 label.config(font=(text_font, 14, "bold"))
 

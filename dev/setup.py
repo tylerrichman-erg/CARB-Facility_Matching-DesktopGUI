@@ -18,7 +18,7 @@ if __name__ == "__main__":
     pyinstaller_exe_location = os.path.join(App.workspace_folder, r"fm-desktop-env\Scripts\pyinstaller.exe")
     main_py_location = os.path.join(App.workspace_folder, r"dev\main.py")
     output_exe_location = os.path.join(App.workspace_folder, r"exe\dist\main.exe")
-    final_exe_location = os.path.join(App.workspace_folder, r"exe\main.exe")
+    final_exe_location = os.path.join(App.workspace_folder, r"FacFinder.exe")
 
     if os.path.exists(os.path.join(App.workspace_folder, "fm-desktop-env")):
         shutil.rmtree(os.path.join(App.workspace_folder, "fm-desktop-env"))
