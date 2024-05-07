@@ -4,9 +4,9 @@ import subprocess
 
 class App:
     def __init__(self):
-        self.workspace_folder = ""
-        self.parcel_parquet_file = ""
-        self.facility_database_loc = ""
+        self.workspace_folder = r""
+        self.parcel_parquet_file = r""
+        self.facility_database_loc = r""
 
 if __name__ == "__main__":
     App = App()
@@ -17,6 +17,7 @@ if __name__ == "__main__":
     pip_exe_location = os.path.join(App.workspace_folder, r"fm-desktop-env\Scripts\pip.exe")
     pyinstaller_exe_location = os.path.join(App.workspace_folder, r"fm-desktop-env\Scripts\pyinstaller.exe")
     main_py_location = os.path.join(App.workspace_folder, r"dev\main.py")
+    icon_location = os.path.join(App.workspace_folder, r"dev\icons\icons8-f-67.png")
     output_exe_location = os.path.join(App.workspace_folder, r"exe\dist\main.exe")
     final_exe_location = os.path.join(App.workspace_folder, r"FacFinder.exe")
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "openpyxl==3.1.2"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyarrow==15.0.2"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyinstaller==6.6.0"], check=True)
-    subprocess.run([activate_venv_command, "&&", "CD", main_exe_folder_location, "&&", pyinstaller_exe_location, "--onefile", main_py_location], check=True)
+    subprocess.run([activate_venv_command, "&&", "CD", main_exe_folder_location, "&&", pyinstaller_exe_location, "--onefile", f"--icon={icon_location}",main_py_location], check=True)
 
     shutil.copy(
         output_exe_location,
