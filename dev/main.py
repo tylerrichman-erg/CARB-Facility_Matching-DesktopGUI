@@ -245,7 +245,7 @@ def execute_facility_matching():
     print("Reading in Master Facilities Table...")
 
     df_master = algorithm.read_in_master_table(
-        db_loc = App.facility_database_file,
+        db_loc = App.facility_database_loc,
         table_name = config["Database"].get("Master_Facilities_Table_Name"),
         ARBID_name = config["Database"].get("AB_name"),
         CO_name = config["Database"].get("CO_name"),
@@ -268,7 +268,7 @@ def execute_facility_matching():
     print("Loading Parcel Dataset...")
 
     parcel_gdf = algorithm.load_parcel_dataset(
-        pqt_folder_path = App.parcel_parquet_folder
+        pqt_folder_path = App.parcel_parquet_file
         )
 
     print("Performing Spatial Join with Parcel Dataset...")
@@ -294,7 +294,7 @@ def execute_facility_matching():
     df_matched = algorithm.execute_matching_algorithm(
         df_standardized,
         df_master,
-        match_scores_fields_path = os.path.join(workspace_directory, r"dev\matching\logic.json")
+        match_scores_fields_path = os.path.join(workspace_directory, r"dev\matching\match_score_fields.json")
         )
 
     print("Generating Output Table...\n")

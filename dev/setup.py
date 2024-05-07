@@ -4,9 +4,9 @@ import subprocess
 
 class App:
     def __init__(self):
-        self.workspace_folder = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/CARB-Facility_Matching-DesktopGUI"
-        self.parcel_parquet_folder = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/Parcel.pqt"
-        self.facility_database_file = "C:/Users/TRichman.ERG/Tyler/Tool Development/CARB Matching Algorithm/Software Deliverables/CARB_Facilities.db"
+        self.workspace_folder = ""
+        self.parcel_parquet_file = ""
+        self.facility_database_loc = ""
 
 if __name__ == "__main__":
     App = App()

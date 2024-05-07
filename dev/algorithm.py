@@ -210,9 +210,7 @@ def read_in_master_table(
     """
 
     conn = sqlite3.connect(db_loc)
-
     df_master = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
-    
     conn.close()
 
     col_rename_dict = {
