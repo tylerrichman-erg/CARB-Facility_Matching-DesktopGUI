@@ -116,7 +116,7 @@ def run_spatial_join(df, parcel_gdf):
         .groupby('UID')\
         .head(1)
 
-    df = df.drop(['OBJECTID', 'PARCEL_APN', 'Shape_Length', 'Shape_Area'], axis=1)
+    df = df.drop(['OBJECTID', 'Shape_Length', 'Shape_Area'], axis=1)
 
     return df
 
