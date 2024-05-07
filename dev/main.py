@@ -386,6 +386,8 @@ def execute_facility_matching():
 ## Create root for window
 root = tk.Tk()
 root.title("FacFinder")
+icon_img = tk.PhotoImage(file=os.path.join(workspace_directory, r"dev\icons\icons8-f-67.png"))
+root.iconphoto(False, icon_img)
 
 ## Set the height and width of the window
 window_width = 800
