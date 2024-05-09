@@ -14,3 +14,5 @@
  <li>Enter in the input parameters for input excel file, field configuration, and output file.</li>
  <li>Hit execute and sit tight! The window that opens with the application will display output messages.</li>
 </ol>
+
+Note make sure there are no duplicate ARBID's in the master table.
