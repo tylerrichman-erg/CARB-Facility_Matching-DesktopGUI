@@ -26,6 +26,7 @@
 
 ## Output of the Tool
 The tool outputs an excel file containing the results of facility matching. The output data is distinguish by different colored headers representing:
+This is a sentence in regular text. <span style="color:#0000FF; font-weight:bold;">This sentence is bold and blue.</span> This is another regular sentence.
 <ul>
  <li><span style="color:#FFCC66;font-weight:bold;">Input Table Records</span>:</li>
  <li><span style="color:#FF7C80;font-weight:bold;">Standardized Input Table Records</span>:</li>
