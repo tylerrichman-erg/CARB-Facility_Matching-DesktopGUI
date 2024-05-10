@@ -14,4 +14,24 @@
  <li>A file called FacIdentifier.exe will appear within the CARB-Facility_Matching-DesktopGUI folder. Open this to access the tool.</li>
 </ol>
 
+## Running the Tool
+<ol>
+ <li>Open FacIdentifier.exe.</li>
+ <li>Select an excel file and sheet containing the input data for the tool.</li>
+ <li>Click "Load".</li>
+ <li>Perform field configuration to match the field names from the input excel file to the field names recognized by the tool.</li>
+ <li>Select the output file location.</li>
+ <li>Click "Execute".</li>
+</ol>
+
+## Output of the Tool
+The tool outputs an excel file containing the results of facility matching. The output data is distinguish by different colored headers representing:
+<ul>
+ <li><span style="color:#FFCC66;font-weight:bold;">Input Table Records</span>:</li>
+ <li><span style="color:#FF7C80;font-weight:bold;">Standardized Input Table Records</span>:</li>
+ <li><span style="color:#66FF33;font-weight:bold;">Match Info</span>:</li>
+ <li><span style="color:#9999FF;font-weight:bold;">Match Criteria</span>:</li>
+ <li><span style="color:#33CCFF;font-weight:bold;">Master Table Records</span>:</li>
+</ul>
+
 Note make sure there are no duplicate ARBID's in the master table.
