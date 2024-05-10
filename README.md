@@ -31,7 +31,7 @@ The tool outputs an excel file containing the results of facility matching. The 
  <li><b>Standardized Input Table Records:</b> A subset of the input excel file records that have been standardized for facility matching.</li>
  <li><b>Match Info:</b> The ARBID and score of the match.</li>
  <li><b>Match Criteria:</b> A modified facility matching criteria matrix flagging attributes that may be mismatched or blank.</li>
- <li><b>Master Table Records:</b> The matched record from the master facility table.</li>
+ <li><b>Master Table Records:</b> The standardized matched record from the master facility table.</li>
 </ul>
 
 ## Updating the Tool
