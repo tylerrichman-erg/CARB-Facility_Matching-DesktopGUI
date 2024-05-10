@@ -305,6 +305,14 @@ def algorithm(df, matching_df, match_score, match_cols):
 
     df = df.drop_duplicates()
 
+    for match_col in match_cols:
+        if df[match_col].dtype == "float64":
+            df.loc[(df["Match_Score"] == match_score) & (df[match_col].isna()), "Match_ARBID"] = np.nan
+            df.loc[(df["Match_Score"] == match_score) & (df[match_col].isna()), "Match_Score"] = np.nan
+        elif df[match_col].dtype == "object":
+            df.loc[(df["Match_Score"] == match_score) & (df[match_col].isin(["", "nan"])), "Match_ARBID"] = np.nan
+            df.loc[(df["Match_Score"] == match_score) & (df[match_col].isin(["", "nan"])), "Match_Score"] = np.nan
+
     return df
 
 def execute_matching_algorithm(df, df_master, match_scores_fields_path):
@@ -375,6 +383,7 @@ def create_final_table(df, df_standardized, df_matched, df_scores_criteria, df_m
 
     df_master.drop(columns=["Score_To_Assign"], inplace=True)
     df_master.rename(columns={"ARBID": "Match_ARBID"}, inplace=True)
+    df_master.drop(columns=["UID"], inplace=True)
 
     for column in df_master.columns:
         if column not in ["Match_ARBID"]:

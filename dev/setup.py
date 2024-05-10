@@ -4,9 +4,9 @@ import subprocess
 
 class App:
     def __init__(self):
-        self.workspace_folder = r""
-        self.parcel_parquet_file = r""
-        self.facility_database_loc = r""
+        self.workspace_folder = r"C:\Users\TRichman.ERG\Tyler\Tool Development\CARB Matching Algorithm\Software Deliverables\CARB-Facility_Matching-DesktopGUI"
+        self.parcel_parquet_file = r"C:\Users\TRichman.ERG\Tyler\Tool Development\CARB Matching Algorithm\Software Deliverables\Parcel.pqt"
+        self.facility_database_loc = r"C:\Users\TRichman.ERG\Tyler\Tool Development\CARB Matching Algorithm\Software Deliverables\CARB_Facilities.db"
 
 if __name__ == "__main__":
     App = App()
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     main_py_location = os.path.join(App.workspace_folder, r"dev\main.py")
     icon_location = os.path.join(App.workspace_folder, r"dev\icons\icons8-f-67.png")
     output_exe_location = os.path.join(App.workspace_folder, r"exe\dist\main.exe")
-    final_exe_location = os.path.join(App.workspace_folder, r"FacFinder.exe")
+    final_exe_location = os.path.join(App.workspace_folder, r"FacIdentifier.exe")
 
     if os.path.exists(os.path.join(App.workspace_folder, "fm-desktop-env")):
         shutil.rmtree(os.path.join(App.workspace_folder, "fm-desktop-env"))

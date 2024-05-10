@@ -222,7 +222,7 @@ def execute_facility_matching():
     
     df = pd.read_excel(excel_path, sheet_name=sheet_name)
     df.insert(0, 'UID', df.index)
-    #df['UID'] = df.index
+    df['UID'] = df.index
 
     print("Standardizing Input Table...")
     
@@ -265,6 +265,9 @@ def execute_facility_matching():
 
     df_master.insert(0, 'UID', df_master.index)
 
+    if df["ARBID"].duplicated().any():
+        print("!! WARNING !!: There are duplicate ARBIDs in the master facilites table. This will create duplicate and/or incorrect master facility record assignments in the output table.")
+
     print("Loading Parcel Dataset...")
 
     parcel_gdf = algorithm.load_parcel_dataset(
@@ -302,17 +305,17 @@ def execute_facility_matching():
     df_scores_criteria = pd.DataFrame(
         [
             [1, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A", "N/A"],
-            [2, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "N/A", "N/A"],
-            [3, "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A", "N/A"],
-            [4, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
-            [5, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
-            [6, "Match", "Match", "Match", "Check for Mismatch", "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "N/A"],
-            [7, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch", "N/A"],
-            [8, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A"],
-            [9, "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "N/A"],
-            [20, "Match", "Match", "Match", "Check for Mismatch", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match"],
-            [21, "Match", "Match", "Match", "Check for Mismatch", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Match", "Match", "Match", "Match", "Match"],
-            [30, "Match", "Match", "Match", "Match", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch", "Check for Mismatch"]
+            [2, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Match", "Match", "N/A", "N/A"],
+            [3, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A", "N/A"],
+            [4, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "N/A"],
+            [5, "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "N/A"],
+            [6, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "N/A"],
+            [7, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "N/A"],
+            [8, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Match", "Match", "Match", "N/A"],
+            [9, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "N/A"],
+            [20, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Match"],
+            [21, "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Match", "Match", "Match", "Match", "Match"],
+            [30, "Match", "Match", "Match", "Match", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value", "Check for Mismatch or Blank Value"]
             ],
         columns = ["Match_Score", "CO", "AB", "DIS", "FACID", "FNAME", "FSTREET", "FCITY", "FZIP", "FSIC","LAT", "LON", "Parcel", "FNAICS"]
         )
@@ -326,40 +329,104 @@ def execute_facility_matching():
     wb = openpyxl.load_workbook(file_path_output.get())
     ws = wb['Sheet1']
 
+    ws.insert_rows(1)
+
+    ### Input Table Formatting ###
+
     len_of_original_table = df.shape[1]
 
     for col in range(1, len_of_original_table):
-        cell = ws.cell(row=1, column=col)
+        cell = ws.cell(row=2, column=col)
+        cell.border = openpyxl.styles.Border(top=None, bottom=None)
         cell.fill = PatternFill(start_color="FFCC66", end_color="FFCC66", fill_type="solid")
+
+    cell = ws.cell(row=1, column=1)
+    cell.value = "Input Table Records"
+    cell.fill = PatternFill(start_color="FFCC66", end_color="FFCC66", fill_type="solid")
+    cell.font = openpyxl.styles.Font(bold=True)
+    cell.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+    start_column_letter = openpyxl.utils.get_column_letter(1)
+    end_column_letter = openpyxl.utils.get_column_letter(len_of_original_table - 1)
+    ws.merge_cells(f'{start_column_letter}1:{end_column_letter}1')
+
+    ### Standardized Table Formatting ###
 
     start_pos_of_standardized_table = len_of_original_table
     len_of_standardized_table = df_standardized.shape[1] - 1
 
     for col in range(start_pos_of_standardized_table, start_pos_of_standardized_table + len_of_standardized_table):
-        cell = ws.cell(row=1, column=col)
+        cell = ws.cell(row=2, column=col)
+        cell.border = openpyxl.styles.Border(top=None, bottom=None)
         cell.fill = PatternFill(start_color="FF7C80", end_color="FF7C80", fill_type="solid")
+        cell.value = cell.value.replace("_standardizedCol", "")
+
+    cell = ws.cell(row=1, column=start_pos_of_standardized_table)
+    cell.value = "Standardized Input Table Records"
+    cell.fill = PatternFill(start_color="FF7C80", end_color="FF7C80", fill_type="solid")
+    cell.font = openpyxl.styles.Font(bold=True)
+    cell.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+    start_column_letter = openpyxl.utils.get_column_letter(start_pos_of_standardized_table)
+    end_column_letter = openpyxl.utils.get_column_letter(start_pos_of_standardized_table + len_of_standardized_table - 1)
+    ws.merge_cells(f'{start_column_letter}1:{end_column_letter}1')
+
+    ### Match Info Formatting ###
 
     start_pos_of_matched_table = len_of_standardized_table + start_pos_of_standardized_table
     len_of_matched_table = 2
 
     for col in range(start_pos_of_matched_table, start_pos_of_matched_table + len_of_matched_table):
-        cell = ws.cell(row=1, column=col)
+        cell = ws.cell(row=2, column=col)
+        cell.border = openpyxl.styles.Border(top=None, bottom=None)
         cell.fill = PatternFill(start_color="66FF33", end_color="66FF33", fill_type="solid")
+
+    cell = ws.cell(row=1, column=start_pos_of_matched_table)
+    cell.value = "Match Info"
+    cell.fill = PatternFill(start_color="66FF33", end_color="66FF33", fill_type="solid")
+    cell.font = openpyxl.styles.Font(bold=True)
+    cell.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+    start_column_letter = openpyxl.utils.get_column_letter(start_pos_of_matched_table)
+    end_column_letter = openpyxl.utils.get_column_letter(start_pos_of_matched_table + len_of_matched_table - 1)
+    ws.merge_cells(f'{start_column_letter}1:{end_column_letter}1')
+
+    ### Criteria Table Formatting ###
 
     start_pos_of_scores_criteria_table = len_of_matched_table + start_pos_of_matched_table
     len_of_scores_criteria_table = df_scores_criteria.shape[1] - 1
 
     for col in range(start_pos_of_scores_criteria_table, start_pos_of_scores_criteria_table + len_of_scores_criteria_table):
-        cell = ws.cell(row=1, column=col)
+        cell = ws.cell(row=2, column=col)
+        cell.border = openpyxl.styles.Border(top=None, bottom=None)
         cell.fill = PatternFill(start_color="9999FF", end_color="9999FF", fill_type="solid")
+        cell.value = cell.value.replace("_matchCriteria", "")
+
+    cell = ws.cell(row=1, column=start_pos_of_scores_criteria_table)
+    cell.value = "Match Criteria"
+    cell.fill = PatternFill(start_color="9999FF", end_color="9999FF", fill_type="solid")
+    cell.font = openpyxl.styles.Font(bold=True)
+    cell.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+    start_column_letter = openpyxl.utils.get_column_letter(start_pos_of_scores_criteria_table)
+    end_column_letter = openpyxl.utils.get_column_letter(start_pos_of_scores_criteria_table + len_of_scores_criteria_table - 1)
+    ws.merge_cells(f'{start_column_letter}1:{end_column_letter}1')
+
+    ### Master Record Formatting ###
 
     start_pos_of_master_table = len_of_scores_criteria_table + start_pos_of_scores_criteria_table
     len_of_master_table = df_master.shape[1] - 1
 
     for col in range(start_pos_of_master_table, start_pos_of_master_table + len_of_master_table):
-        cell = ws.cell(row=1, column=col)
+        cell = ws.cell(row=2, column=col)
+        cell.border = openpyxl.styles.Border(top=None, bottom=None)
         cell.fill = PatternFill(start_color="33CCFF", end_color="33CCFF", fill_type="solid")
+        cell.value = cell.value.replace("_matchRecord", "")
 
+    cell = ws.cell(row=1, column=start_pos_of_master_table)
+    cell.value = "Master Table Records"
+    cell.fill = PatternFill(start_color="33CCFF", end_color="33CCFF", fill_type="solid")
+    cell.font = openpyxl.styles.Font(bold=True)
+    cell.alignment = openpyxl.styles.Alignment(horizontal='center', vertical='center')
+    start_column_letter = openpyxl.utils.get_column_letter(start_pos_of_master_table)
+    end_column_letter = openpyxl.utils.get_column_letter(start_pos_of_master_table + len_of_master_table - 1)
+    ws.merge_cells(f'{start_column_letter}1:{end_column_letter}1')
 
     wb.save(file_path_output.get())
 
@@ -367,13 +434,15 @@ def execute_facility_matching():
 
     df_summary = df_matched.groupby(['Match_Score']).size().reset_index('Match_Score')
     df_summary.columns = ['Match_Score', 'Match_Count']
-    
+
+    no_match_count_text = '{:,}'.format(len(df_matched['Match_Score'] == ""))
+        
     message_box_text = "Facility Matching Complete!\n\nMatch\tMatch\nScore\tCount\n\n"
 
     for index, row in df_summary.iterrows():
         message_box_text = "{0}{1}\t{2}\n".format(message_box_text, '{:,}'.format(int(row['Match_Score'])), '{:,}'.format(int(row['Match_Count'])))
 
-    tk.messagebox.showinfo("FacFinder: CARB Facility Matching Tool", message_box_text) 
+    tk.messagebox.showinfo("FacIdentifier: CARB Facility Matching Tool", message_box_text) 
 
 
 #################################################
@@ -385,7 +454,7 @@ def execute_facility_matching():
     
 ## Create root for window
 root = tk.Tk()
-root.title("FacFinder")
+root.title("FacIdentifier")
 icon_img = tk.PhotoImage(file=os.path.join(workspace_directory, r"dev\icons\icons8-f-67.png"))
 root.iconphoto(False, icon_img)
 
@@ -406,7 +475,7 @@ title_frame = tk.Frame(root)
 title_frame.pack(pady=10)
 
 ## Create a label for title
-label = tk.Label(title_frame, text="FacFinder: CARB Facility Matching Tool")
+label = tk.Label(title_frame, text="FacIdentifier: CARB Facility Matching Tool")
 label.pack(side='top', pady=10)
 label.config(font=(text_font, 14, "bold"))
 
