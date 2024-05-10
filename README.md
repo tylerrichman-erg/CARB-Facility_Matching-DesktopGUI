@@ -35,4 +35,13 @@ The tool outputs an excel file containing the results of facility matching. The 
 </ul>
 
 ## Updating the Tool
-The "docs/
+The "main" brach of this repository should contain the most up-to-date operational code for the tool. The "ERG" branch contains the source code of the application delivered to CARB in May 2024.
+
+The "docs/Guidance on Potential Tool Updates.pdf" file contains instructions on how to perform the following updates to the tool:
+<ul>
+ <li>Incorporating an alternative database.</li>
+ <li>Adding fields to the matching algorithm.</li>
+ <li>Updatign the parcel dataset.</li>
+</ul>
+
+Please email tyler.richman@erg.com for access to make edits this repository or if you have any questions regarding this tool.
