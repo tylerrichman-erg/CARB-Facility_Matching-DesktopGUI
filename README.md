@@ -35,7 +35,7 @@ The tool outputs an excel file containing the results of facility matching. The 
 </ul>
 
 ## Updating the Tool
-The "main" brach of this repository should contain the most up-to-date operational code for the tool. The "ERG" branch contains the source code of the application delivered to CARB in May 2024.
+The "main" brach of this repository should contain the most up-to-date operational code for the tool. The "ERG" branch contains the source code of the application delivered to CARB in May 2024. Re-run setup.py to incorporate changes into the tool. <b>DO NOT</b> push the files generated from setup.py into the repository, it will take up a significant amount of storage space here.
 
 The "docs/Guidance on Potential Tool Updates.pdf" file contains instructions on how to perform the following updates to the tool:
 <ul>
