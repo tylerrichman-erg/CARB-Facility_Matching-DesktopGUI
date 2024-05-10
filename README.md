@@ -7,7 +7,7 @@
   <li>This application was developed and tested on Python 3.9 but it may be compatible with similar versions.</li>
   <li>DO NOT use ArcGIS Pro's Python installation, it will result in errors when setting up the tool. Please use a stand alone or Anaconda Python installation.</li>
  </ul>
- <li>Download the reposity by clicking the green "Code" button and selecting "Download ZIP".</li>
+ <li>Download the reposity by clicking the green "Code" button on this page and selecting "Download ZIP".</li>
  <li>Open CARB-Facility_Matching-DesktopGUI/dev/setup.py and change the pathways on lines 7-9 to the workspace, parcel parquet file, and Golden Master database respectively.</li>
  <li>Run CARB-Facility_Matching-DesktopGUI/dev/setup.py.</li>
  <li>A file called FacIdentifier.exe will appear within the CARB-Facility_Matching-DesktopGUI folder. Open this to access the tool.</li>
