@@ -34,4 +34,5 @@ The tool outputs an excel file containing the results of facility matching. The 
  <li><b>Master Table Records:</b> The matched record from the master facility table.</li>
 </ul>
 
-Note make sure there are no duplicate ARBID's in the master table.
+## Updating the Tool
+The "docs/
