@@ -26,15 +26,12 @@
 
 ## Output of the Tool
 The tool outputs an excel file containing the results of facility matching. The output data is distinguish by different colored headers representing:
-<span style="color:red">
-Text content
-</span>
 <ul>
- <li><span style="color:#FFCC66;font-weight:bold;">Input Table Records</span>:</li>
- <li><span style="color:#FF7C80;font-weight:bold;">Standardized Input Table Records</span>:</li>
- <li><span style="color:#66FF33;font-weight:bold;">Match Info</span>:</li>
- <li><span style="color:#9999FF;font-weight:bold;">Match Criteria</span>:</li>
- <li><span style="color:#33CCFF;font-weight:bold;">Master Table Records</span>:</li>
+ <li><b>Input Table Records:</b> Records from the input excel file.</li>
+ <li><b>Standardized Input Table Records:</b> A subset of the input excel file records that have been standardized for facility matching.</li>
+ <li><b>Match Info:</b> The ARBID and score of the match.</li>
+ <li><b>Match Criteria:</b> A modified facility matching criteria matrix flagging attributes that may be mismatched or blank.</li>
+ <li><b>Master Table Records:</b> The matched record from the master facility table.</li>
 </ul>
 
 Note make sure there are no duplicate ARBID's in the master table.
