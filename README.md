@@ -5,7 +5,7 @@
  <li>Install <a href="https://www.python.org/downloads/">Python 3</a> onto your personal computer.</li>
  <ul>
   <li>This application was developed and tested on Python 3.9 but it may be compatible with similar versions.</li>
-  <li>DO NOT use ArcGIS Pro's Python installation, it will result in errors when setting up the tool. Please use a stand alone or Anaconda Python installation.</li>
+  <li>DO NOT use ArcGIS Pro's Python installation, it will result in errors when setting up the tool. Please use a stand alone Python installation.</li>
  </ul>
  <li>Download the reposity by clicking the green "Code" button on this page and selecting "Download ZIP".</li>
  <li>Unzip the code into an approprate folder.</li>
