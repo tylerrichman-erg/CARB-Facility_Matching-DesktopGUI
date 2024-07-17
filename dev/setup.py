@@ -31,12 +31,12 @@ if __name__ == "__main__":
         os.makedirs(main_exe_folder_location)
 
     subprocess.run(['python', '-m', 'venv', os.path.join(App.workspace_folder, "fm-desktop-env")], check=True)
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "geopandas==0.14.3"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "geopandas"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk"], check=True)
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow==10.3.0"], check=True)
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "openpyxl==3.1.2"], check=True)
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyarrow==15.0.2"], check=True)
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyinstaller==6.6.0"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "openpyxl"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyarrow"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyinstaller"], check=True)
     subprocess.run([activate_venv_command, "&&", "CD", main_exe_folder_location, "&&", pyinstaller_exe_location, "--onefile", f"--icon={icon_location}",main_py_location], check=True)
 
     shutil.copy(
