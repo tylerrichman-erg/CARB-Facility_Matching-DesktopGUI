@@ -44,4 +44,7 @@ The "docs/Guidance on Potential Tool Updates.pdf" file contains instructions on 
  <li>Updatign the parcel dataset.</li>
 </ul>
 
+## Encountered Issues and Solutions
+If you encounter a PyInstaller issue during the tool set up, place CARB-Facility_Matching-DesktopGUI-main in the Documents folder, adjust the working directory in setup.py, and re-run setup.py.
+
 Please email tyler.richman@erg.com for access to make edits this repository or if you have any questions regarding this tool.
