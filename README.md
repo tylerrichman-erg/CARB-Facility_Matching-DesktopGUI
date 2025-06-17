@@ -41,7 +41,7 @@ The "docs/Guidance on Potential Tool Updates.pdf" file contains instructions on 
 <ul>
  <li>Incorporating an alternative database.</li>
  <li>Adding fields to the matching algorithm.</li>
- <li>Updatign the parcel dataset.</li>
+ <li>Updating the parcel dataset.</li>
 </ul>
 
 ## Encountered Issues and Solutions
